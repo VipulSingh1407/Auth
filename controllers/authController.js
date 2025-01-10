@@ -53,7 +53,6 @@ exports.verifyOTP = async (req, res) => {
 
 
 
-// User Login
 exports.login = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -70,11 +69,17 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.status(200).json({ message: 'Login successful', token });
+        // Return user details along with the token
+        res.status(200).json({
+            message: 'Login successful',
+            user: { username: user.username, email: user.email }, // Include user details
+            token,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 exports.requestPasswordResetOTP = async (req, res) => {
